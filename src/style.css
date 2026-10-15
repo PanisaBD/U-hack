@@ -1,0 +1,510 @@
+:root {
+  color: #272821;
+  background: #fdf9f1;
+  font-family: "Trebuchet MS", "Arial", sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  background: #fdf9f1;
+}
+
+button {
+  color: inherit;
+  font: inherit;
+}
+
+button:focus-visible {
+  outline: 3px solid #515f3e;
+  outline-offset: 3px;
+}
+
+.iphone {
+  --ink: #2d2e28;
+  --olive: #515f3e;
+  --sage: #dfe2bf;
+  display: flex;
+  flex-direction: column;
+  width: min(100%, 402px);
+  min-height: 100vh;
+  min-height: 100svh;
+  margin: 0 auto;
+  padding: 22px 32px 0;
+  position: relative;
+  background: #fdf9f1;
+  color: var(--ink);
+}
+
+.app-header {
+  display: grid;
+  grid-template-columns: 45px minmax(0, 1fr) 45px;
+  align-items: center;
+  gap: 12px;
+  min-height: 46px;
+  margin: 0 4px 14px;
+}
+
+.avatar-button,
+.notification-button {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 45px;
+  height: 45px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.avatar-button {
+  background: #abaf7d;
+  color: #30342a;
+}
+
+.notification-button {
+  background: #dededc;
+  color: #30312d;
+}
+
+.avatar-button svg,
+.notification-button svg {
+  width: 26px;
+  height: 26px;
+  stroke-width: 1.7;
+}
+
+.notification-dot {
+  position: absolute;
+  top: 8px;
+  right: 9px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #d66a4b;
+}
+
+.header-spacer {
+  min-width: 0;
+}
+
+.dashboard {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 25px;
+  padding-bottom: 28px;
+}
+
+.pet-switcher {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  margin-top: 0;
+  margin-bottom: -5px;
+}
+
+.pet-chip,
+.add-pet {
+  display: inline-flex;
+  min-width: 0;
+  height: 43px;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 12px;
+  border: 2px solid #b5b783;
+  border-radius: 24px;
+  background: #fff8d7;
+  color: #51533f;
+  cursor: pointer;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.pet-chip.is-selected {
+  border-color: #b2b77f;
+  background: #fff2a8;
+}
+
+.pet-chip svg {
+  width: 16px;
+  height: 16px;
+  stroke-width: 1.8;
+}
+
+.add-pet {
+  flex: 1;
+  border-color: #aeb37c;
+  background: #aeb37c;
+  color: #fffdf4;
+}
+
+.welcome-card {
+  position: relative;
+  min-height: 198px;
+  overflow: visible;
+  padding: 24px 27px;
+  border-radius: 30px;
+  background: #fff9d6;
+}
+
+.welcome-copy {
+  position: relative;
+  z-index: 1;
+  width: 62%;
+}
+
+.welcome-copy h1 {
+  margin: 0 0 5px;
+  color: #515f3e;
+  font-family: "Arial Black", "Trebuchet MS", sans-serif;
+  font-size: 38px;
+  font-weight: 1000;
+  letter-spacing: 0;
+  line-height: 0.82;
+}
+
+.pet-breed {
+  margin: 8px 0 2px;
+  color: #34352e;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.pet-details {
+  margin: 0;
+  color: #45463f;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.profile-action {
+  display: inline-flex;
+  min-width: 108px;
+  min-height: 33px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 11px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 10px;
+  background: #aeb37c;
+  color: #fffdf6;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.welcome-art {
+  position: absolute;
+  inset: 0 0 0 auto;
+  width: 46%;
+  pointer-events: none;
+}
+
+.cat-tuxedo {
+  position: absolute;
+  right: 15px;
+  bottom: 0;
+  display: block;
+  width: 95px;
+  height: 142px;
+  object-fit: contain;
+}
+
+.welcome-sparkle {
+  position: absolute;
+  top: 37px;
+  left: 0;
+  color: #dfae39;
+  font-size: 30px;
+  line-height: 1;
+}
+
+.vaccine-alert {
+  position: absolute;
+  right: 18px;
+  bottom: -13px;
+  z-index: 2;
+  display: inline-flex;
+  min-height: 31px;
+  align-items: center;
+  gap: 5px;
+  padding: 0 12px;
+  transform: rotate(-5deg);
+  border: 0;
+  border-radius: 18px;
+  background: #eff51c;
+  color: #202219;
+  cursor: pointer;
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.vaccine-alert svg {
+  width: 15px;
+  height: 15px;
+  stroke-width: 1.9;
+}
+
+.vaccine-alert strong {
+  font-size: 11px;
+}
+
+.section-heading {
+  margin-bottom: 9px;
+}
+
+.section-heading h2 {
+  margin: 0;
+  color: #515f3e;
+  font-family: "Arial Black", "Trebuchet MS", sans-serif;
+  font-size: 16px;
+  font-weight: 1000;
+  line-height: 1.1;
+}
+
+.appointment-card {
+  display: grid;
+  grid-template-columns: 33px minmax(0, 1fr) 22px;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 76px;
+  padding: 12px 16px;
+  border: 0;
+  border-radius: 21px;
+  background: #dfe2bf;
+  text-align: left;
+  cursor: pointer;
+}
+
+.appointment-icon {
+  display: grid;
+  place-items: center;
+  color: #40483a;
+}
+
+.appointment-icon svg {
+  width: 31px;
+  height: 31px;
+  stroke-width: 1.8;
+}
+
+.appointment-copy {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.appointment-copy strong {
+  overflow: hidden;
+  color: #44463f;
+  font-size: 16px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.appointment-copy small {
+  overflow: hidden;
+  color: #41423b;
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.appointment-arrow {
+  width: 27px;
+  height: 27px;
+  color: #33362d;
+  stroke-width: 1.8;
+}
+
+.services-section .section-heading {
+  margin-bottom: 11px;
+}
+
+.service-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 10px;
+}
+
+.service-card {
+  display: grid;
+  grid-template-columns: 27px minmax(0, 1fr);
+  align-content: start;
+  align-items: center;
+  column-gap: 9px;
+  row-gap: 12px;
+  min-width: 0;
+  min-height: 130px;
+  padding: 16px 14px 12px;
+  border: 0;
+  border-radius: 20px;
+  color: #1f211d;
+  text-align: left;
+  cursor: pointer;
+}
+
+.service-card > svg {
+  width: 27px;
+  height: 27px;
+  color: #45463f;
+  stroke-width: 1.7;
+}
+
+.service-card strong {
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.service-card small {
+  grid-column: 1 / -1;
+  color: #282923;
+  font-size: 10px;
+  line-height: 1.22;
+}
+
+.appointment-service {
+  background: #fff0e6;
+}
+
+.telehealth-service {
+  background: #fbf4d5;
+}
+
+.lab-service {
+  background: #eef0e5;
+}
+
+.tips-service {
+  background: #faeddd;
+}
+
+.bottom-nav {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  width: calc(100% + 24px);
+  min-height: 87px;
+  align-items: center;
+  margin: auto -12px 27px;
+  padding: 12px 14px 11px;
+  border-radius: 42px;
+  background: #f8efb4;
+}
+
+.nav-item {
+  display: grid;
+  justify-items: center;
+  gap: 5px;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #171914;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.nav-item svg {
+  width: 27px;
+  height: 27px;
+  stroke-width: 1.8;
+}
+
+.nav-item.is-active svg {
+  stroke-width: 2.1;
+}
+
+@media (max-width: 370px) {
+  .iphone {
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+
+  .pet-switcher {
+    gap: 5px;
+  }
+
+  .pet-chip,
+  .add-pet {
+    height: 39px;
+    gap: 4px;
+    padding-right: 8px;
+    padding-left: 8px;
+    font-size: 12px;
+  }
+
+  .welcome-card {
+    padding-right: 17px;
+    padding-left: 20px;
+  }
+
+  .welcome-copy h1 {
+    font-size: 34px;
+  }
+
+  .cat-tuxedo {
+    right: 7px;
+    width: 82px;
+    height: auto;
+  }
+
+  .vaccine-alert {
+    right: 8px;
+    padding: 0 9px;
+    font-size: 9px;
+  }
+
+  .service-card {
+    grid-template-columns: 23px minmax(0, 1fr);
+    column-gap: 6px;
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+
+  .service-card > svg {
+    width: 23px;
+    height: 23px;
+  }
+
+  .service-card strong {
+    font-size: 12px;
+  }
+
+  .service-card small {
+    font-size: 9px;
+  }
+
+  .bottom-nav {
+    width: calc(100% + 12px);
+    margin-right: -6px;
+    margin-left: -6px;
+  }
+}
+
+@media (min-width: 600px) {
+  body {
+    background: #ecebe4;
+  }
+
+  .iphone {
+    box-shadow: 0 0 48px rgb(43 46 35 / 10%);
+  }
+}
