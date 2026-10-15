@@ -2036,7 +2036,7 @@ button:focus-visible {
 }
 
 .calendar-panel {
-  padding: 15px;
+  padding: 12px;
   border: 1px solid #e9e7db;
   border-radius: 18px;
   background: #fffdf7;
@@ -2047,11 +2047,11 @@ button:focus-visible {
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  margin-bottom: 13px;
+  margin-bottom: 9px;
 }
 
 .calendar-title-row h2 {
-  margin: 4px 0 0;
+  margin: 0;
   color: #46513a;
   font-size: 17px;
 }
@@ -2101,7 +2101,7 @@ button:focus-visible {
 .calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: 3px;
+  gap: 2px;
 }
 
 .calendar-weekdays {
@@ -2122,10 +2122,10 @@ button:focus-visible {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  gap: 3px;
+  gap: 2px;
   min-width: 0;
-  min-height: 55px;
-  padding: 5px 1px 4px;
+  min-height: 43px;
+  padding: 4px 1px 3px;
   border: 1px solid transparent;
   border-radius: 9px;
   background: transparent;
@@ -2171,10 +2171,10 @@ button:focus-visible {
   max-width: calc(100% - 2px);
   overflow: hidden;
   color: #536342;
-  padding: 2px 3px;
+  padding: 1px 2px;
   border-radius: 6px;
   background: #e8eddd;
-  font-size: 8px;
+  font-size: 7px;
   font-weight: 700;
   line-height: 1;
   text-overflow: ellipsis;
@@ -2197,8 +2197,8 @@ button:focus-visible {
 
 .calendar-event-label svg {
   flex: 0 0 auto;
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
 }
 
 .calendar-more {
