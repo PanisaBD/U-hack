@@ -1,7 +1,7 @@
 :root {
   color: #272821;
   background: #fdf9f1;
-  font-family: "Trebuchet MS", "Arial", sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -176,7 +176,7 @@ button:focus-visible {
 .welcome-copy h1 {
   margin: 0 0 5px;
   color: #515f3e;
-  font-family: "Arial Black", "Trebuchet MS", sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
   font-size: 38px;
   font-weight: 1000;
   letter-spacing: 0;
@@ -278,7 +278,7 @@ button:focus-visible {
 .section-heading h2 {
   margin: 0;
   color: #515f3e;
-  font-family: "Arial Black", "Trebuchet MS", sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
   font-size: 16px;
   font-weight: 1000;
   line-height: 1.1;
@@ -334,6 +334,20 @@ button:focus-visible {
   white-space: nowrap;
 }
 
+.appointment-copy small.appointment-pet-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #596746;
+  font-weight: 700;
+}
+
+.appointment-pet-name svg {
+  flex: 0 0 auto;
+  width: 12px;
+  height: 12px;
+}
+
 .appointment-arrow {
   width: 27px;
   height: 27px;
@@ -343,6 +357,44 @@ button:focus-visible {
 
 .services-section .section-heading {
   margin-bottom: 11px;
+}
+
+.clinic-discovery-link {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr) 18px;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  min-height: 42px;
+  padding: 0 2px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #536342;
+  cursor: pointer;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.2;
+  appearance: none;
+}
+
+.clinic-discovery-link > svg:first-child {
+  width: 18px;
+  height: 18px;
+  justify-self: center;
+  color: #66744d;
+}
+
+.clinic-discovery-link > svg:last-child {
+  width: 17px;
+  height: 17px;
+  justify-self: end;
+  color: #77796e;
+}
+
+.clinic-discovery-link:hover {
+  color: #35432c;
 }
 
 .service-grid {
@@ -569,7 +621,7 @@ button:focus-visible {
 .page-heading h1 {
   margin: 3px 0 0;
   color: var(--olive);
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: Arial, Helvetica, sans-serif;
   font-size: 24px;
   font-weight: 700;
   line-height: 1.12;
@@ -598,7 +650,7 @@ button:focus-visible {
 .report-detail h2 {
   margin: 0 0 12px;
   color: #424d35;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: Arial, Helvetica, sans-serif;
   font-size: 17px;
   font-weight: 700;
 }
@@ -866,7 +918,7 @@ button:focus-visible {
 
 .record-section h2 {
   margin: 0 0 9px;
-  font-family: "Trebuchet MS", "Arial", sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
   font-size: 13px;
 }
 
@@ -1381,7 +1433,7 @@ button:focus-visible {
 .tip-card h2 {
   margin: 7px 0;
   color: #3f4b34;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: Arial, Helvetica, sans-serif;
   font-size: 17px;
 }
 
@@ -1492,7 +1544,7 @@ button:focus-visible {
 
 .clinic-results-heading h2 {
   color: #46513a;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: Arial, Helvetica, sans-serif;
   font-size: 17px;
 }
 
@@ -1550,7 +1602,7 @@ button:focus-visible {
 .clinic-card h3 {
   margin: 4px 0 8px;
   color: #3e4935;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: Arial, Helvetica, sans-serif;
   font-size: 16px;
 }
 
@@ -1836,7 +1888,7 @@ button:focus-visible {
 .selection-prompt h2 {
   margin: 3px 0 0;
   color: #46513a;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: Arial, Helvetica, sans-serif;
   font-size: 16px;
 }
 
@@ -1846,4 +1898,381 @@ button:focus-visible {
   color: #77796e;
   font-size: 10px;
   line-height: 1.45;
+}
+
+.pet-record-list {
+  display: grid;
+  gap: 10px;
+}
+
+.pet-record-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 76px;
+  padding: 12px;
+  border: 1px solid #e9e7db;
+  border-radius: 16px;
+  background: #fffdf7;
+  text-align: left;
+  cursor: pointer;
+}
+
+.pet-record-card > .profile-pet-icon {
+  width: 46px;
+  height: 46px;
+}
+
+.pet-record-copy {
+  display: grid;
+  flex: 1;
+  gap: 4px;
+  min-width: 0;
+}
+
+.pet-record-copy strong {
+  color: #3f4a34;
+  font-size: 13px;
+}
+
+.pet-record-copy small {
+  overflow: hidden;
+  color: #77796e;
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pet-record-card > svg {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  color: #77796e;
+}
+
+.pet-detail-hero {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 18px;
+  background: #fff9d6;
+}
+
+.pet-detail-hero .profile-pet-icon {
+  width: 52px;
+  height: 52px;
+}
+
+.pet-detail-hero > div {
+  flex: 1;
+  min-width: 0;
+}
+
+.pet-detail-hero h2 {
+  margin: 0 0 4px;
+  color: #48563a;
+  font-size: 17px;
+}
+
+.pet-detail-hero p {
+  margin: 0;
+  color: #77796e;
+  font-size: 10px;
+}
+
+.pet-facts-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.pet-facts-grid > div {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+  padding: 11px;
+  border-radius: 11px;
+  background: #f7f6ee;
+}
+
+.pet-facts-grid .fact-wide {
+  grid-column: 1 / -1;
+}
+
+.pet-facts-grid span {
+  color: #77796e;
+  font-size: 9px;
+}
+
+.pet-facts-grid strong {
+  overflow: hidden;
+  color: #393d32;
+  font-size: 11px;
+  text-overflow: ellipsis;
+}
+
+.calendar-panel {
+  padding: 15px;
+  border: 1px solid #e9e7db;
+  border-radius: 18px;
+  background: #fffdf7;
+}
+
+.calendar-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 13px;
+}
+
+.calendar-title-row h2 {
+  margin: 4px 0 0;
+  color: #46513a;
+  font-size: 17px;
+}
+
+.calendar-controls {
+  display: flex;
+  gap: 5px;
+}
+
+.calendar-controls .icon-button {
+  width: 32px;
+  height: 32px;
+  background: #f3f1e7;
+}
+
+.calendar-controls .icon-button svg {
+  width: 17px;
+  height: 17px;
+}
+
+.calendar-legend {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  margin: -4px 0 10px;
+  color: #77796e;
+  font-size: 8px;
+}
+
+.calendar-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.calendar-legend svg {
+  width: 12px;
+  height: 12px;
+  color: #78875d;
+}
+
+.calendar-legend .past-legend svg {
+  color: #92948a;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 3px;
+}
+
+.calendar-weekdays {
+  margin-bottom: 5px;
+}
+
+.calendar-weekdays span {
+  display: grid;
+  place-items: center;
+  min-height: 24px;
+  color: #888a7e;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.calendar-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 3px;
+  min-width: 0;
+  min-height: 55px;
+  padding: 5px 1px 4px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background: transparent;
+  color: #42453b;
+  cursor: pointer;
+  font-size: 10px;
+}
+
+.calendar-day.selected {
+  border-color: #68764e;
+  background: #edf0e5;
+  color: #445237;
+  font-weight: 800;
+}
+
+.calendar-day.is-today:not(.selected) > span {
+  display: grid;
+  place-items: center;
+  width: 19px;
+  height: 19px;
+  border-radius: 50%;
+  background: #e8ebdc;
+  color: #46563a;
+  font-weight: 800;
+}
+
+.calendar-day.has-event:not(.selected) {
+  background: #f5f3e6;
+}
+
+.calendar-day.past-event:not(.selected) {
+  background: #f0efe9;
+}
+
+.calendar-day > span {
+  line-height: 1.1;
+}
+
+.calendar-event-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  max-width: calc(100% - 2px);
+  overflow: hidden;
+  color: #536342;
+  padding: 2px 3px;
+  border-radius: 6px;
+  background: #e8eddd;
+  font-size: 8px;
+  font-weight: 700;
+  line-height: 1;
+  text-overflow: ellipsis;
+}
+
+.calendar-event-label.vaccine {
+  background: #f8edc8;
+  color: #856a2e;
+}
+
+.calendar-event-label.medication {
+  background: #f8e8dc;
+  color: #8a5d42;
+}
+
+.calendar-day.past-event .calendar-event-label {
+  background: #e8e7e0;
+  color: #75776d;
+}
+
+.calendar-event-label svg {
+  flex: 0 0 auto;
+  width: 10px;
+  height: 10px;
+}
+
+.calendar-more {
+  color: #73766a;
+  font-size: 8px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.calendar-day.empty {
+  cursor: default;
+}
+
+.selected-date-section .section-heading {
+  margin-bottom: 8px;
+}
+
+.calendar-empty-day {
+  margin: 0;
+  padding: 13px;
+  border-radius: 12px;
+  background: #f7f6ee;
+  color: #77796e;
+  font-size: 10px;
+}
+
+.appointment-card.appointment-selected {
+  outline: 2px solid #87936c;
+  outline-offset: 1px;
+}
+
+.appointment-detail {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 14px;
+  border: 1px solid #e7e8d9;
+  border-radius: 14px;
+  background: #f8f8f0;
+}
+
+.appointment-type-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #61704b;
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.appointment-type-label svg {
+  width: 14px;
+  height: 14px;
+}
+
+.appointment-detail h3 {
+  margin: 0;
+  color: #414a36;
+  font-size: 14px;
+}
+
+.appointment-detail p {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  color: #66695d;
+  font-size: 10px;
+}
+
+.appointment-detail p svg {
+  width: 14px;
+  height: 14px;
+}
+
+.appointment-detail .appointment-note {
+  padding-top: 7px;
+  border-top: 1px solid #e7e8d9;
+  line-height: 1.4;
+}
+
+.choice-grid button.selected {
+  border-color: #75845a;
+  background: #e9eddd;
+  color: #48563a;
+  font-weight: 700;
+}
+
+.past-status {
+  margin-left: 4px;
+  padding: 3px 6px;
+  border-radius: 8px;
+  background: #e8e7e0;
+  color: #77796e;
+  font-size: 8px;
+  font-weight: 700;
+  text-transform: none;
 }

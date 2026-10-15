@@ -7,6 +7,7 @@ import {
   Cat,
   Check,
   ChevronDown,
+  ChevronLeft,
   ChevronRight,
   CircleAlert,
   Clock3,
@@ -43,6 +44,13 @@ export const Iphone = () => {
     { name: "Bat Man", species: "cat", breed: "Domestic Shorthair", weight: "4.2", age: "3 yrs" },
     { name: "Chok Dee", species: "dog", breed: "Thai Ridgeback", weight: "18", age: "5 yrs" },
   ]);
+  const [appointments, setAppointments] = useState([
+    { id: "wellness-batman", petName: "Bat Man", title: "Annual wellness exam", type: "Visit", date: "2026-09-18", time: "9:00 AM", clinic: "Happy Pet Clinic", notes: "Completed. Routine wellness check." },
+    { id: "dental-batman", petName: "Bat Man", title: "Dental check", type: "Visit", date: "2026-10-06", time: "2:00 PM", clinic: "Green Paws Veterinary", notes: "Completed. No treatment needed." },
+    { id: "dhpp-batman", petName: "Bat Man", title: "DHPP booster", type: "Vaccine", date: "2026-10-21", time: "10:30 AM", clinic: "Happy Pet Clinic", notes: "Bring vaccination book." },
+    { id: "rabies-batman", petName: "Bat Man", title: "Rabies vaccine", type: "Vaccine", date: "2026-10-29", time: "11:00 AM", clinic: "Happy Pet Clinic", notes: "Annual booster." },
+    { id: "checkup-chokdee", petName: "Chok Dee", title: "Wellness check", type: "Visit", date: "2026-10-23", time: "1:30 PM", clinic: "City Animal Hospital", notes: "Routine checkup." },
+  ]);
   const [isCreatingPet, setIsCreatingPet] = useState(false);
   const [notice, setNotice] = useState("");
 
@@ -58,7 +66,7 @@ export const Iphone = () => {
 
   const startAddPet = () => {
     setIsCreatingPet(true);
-    openPage("profile");
+    openPage("edit-profile");
   };
 
   const navigateTab = (nextPage) => {
@@ -79,9 +87,10 @@ export const Iphone = () => {
       </header>
 
       {page === "home" && <HomeScreen pets={pets} onNavigate={openPage} onAddPet={startAddPet} selectedPet={selectedPet} onSelectPet={setSelectedPet} />}
-      {page === "profile" && <ProfileScreen onBack={() => openPage("home")} selectedPet={selectedPet} pets={pets} isNew={isCreatingPet} onSaved={(profile) => { setPets((currentPets) => isCreatingPet ? [...currentPets, profile] : currentPets.map((pet) => pet.name === selectedPet ? profile : pet)); setSelectedPet(profile.name); setIsCreatingPet(false); openPage("home"); showNotice(isCreatingPet ? "Pet profile created" : "Pet profile saved"); }} />}
-      {page === "records" && <RecordsScreen pets={pets} onNavigate={openPage} />}
-      {page === "schedule" && <ScheduleScreen pets={pets} onNavigate={openPage} onBooked={() => showNotice("Appointment added to your schedule")} />}
+      {page === "profile" && <PetProfileScreen pet={pets.find((pet) => pet.name === selectedPet) || pets[0]} onBack={() => openPage("home")} onEdit={() => openPage("edit-profile")} />}
+      {page === "edit-profile" && <ProfileScreen onBack={() => openPage(isCreatingPet ? "home" : "profile")} selectedPet={selectedPet} pets={pets} isNew={isCreatingPet} onSaved={(profile) => { setPets((currentPets) => isCreatingPet ? [...currentPets, profile] : currentPets.map((pet) => pet.name === selectedPet ? profile : pet)); setSelectedPet(profile.name); setIsCreatingPet(false); openPage(isCreatingPet ? "home" : "profile"); showNotice(isCreatingPet ? "Pet profile created" : "Pet profile saved"); }} />}
+      {page === "records" && <RecordsScreen pets={pets} onSelectPet={setSelectedPet} onNavigate={openPage} />}
+      {page === "schedule" && <ScheduleScreen pets={pets} appointments={appointments} onNavigate={openPage} onBooked={(appointment) => { setAppointments((current) => [...current, appointment]); showNotice("Appointment added to your schedule"); }} />}
       {page === "consult" && <ConsultScreen pets={pets} onNavigate={openPage} />}
       {page === "labs" && <LabsScreen pets={pets} onNotice={showNotice} onNavigate={openPage} />}
       {page === "tips" && <TipsScreen pets={pets} onNavigate={openPage} />}
@@ -126,17 +135,17 @@ const PageHeading = ({ title, subtitle, onBack, action }) => (
   </div>
 );
 
-const PetPicker = ({ pets, value, onChange, label = "Select a pet" }) => {
+const PetPicker = ({ pets, value, onChange, label = "Select a pet", includeAll = false }) => {
   const [isOpen, setIsOpen] = useState(false);
   const activePet = pets.find((pet) => pet.name === value);
   return (
     <div className="pet-picker">
       <span className="field-label">{label}</span>
       <button className="pet-picker-trigger" type="button" aria-haspopup="listbox" aria-expanded={isOpen} onClick={() => setIsOpen(!isOpen)}>
-        {activePet ? <>{activePet.species === "cat" ? <Cat aria-hidden="true" /> : <Dog aria-hidden="true" />}<span>{activePet.name}</span></> : <><PawPrint aria-hidden="true" /><span>Choose a pet</span></>}
+        {value === "all" ? <><PawPrint aria-hidden="true" /><span>All pets</span></> : activePet ? <>{activePet.species === "cat" ? <Cat aria-hidden="true" /> : <Dog aria-hidden="true" />}<span>{activePet.name}</span></> : <><PawPrint aria-hidden="true" /><span>Choose a pet</span></>}
         <ChevronDown aria-hidden="true" className={isOpen ? "is-open" : ""} />
       </button>
-      {isOpen && <div className="pet-picker-options" role="listbox" aria-label={label}>{pets.map((pet) => <button className={pet.name === value ? "selected" : ""} type="button" role="option" aria-selected={pet.name === value} key={pet.name} onClick={() => { onChange(pet.name); setIsOpen(false); }}>
+      {isOpen && <div className="pet-picker-options" role="listbox" aria-label={label}>{includeAll && <button className={value === "all" ? "selected" : ""} type="button" role="option" aria-selected={value === "all"} onClick={() => { onChange("all"); setIsOpen(false); }}><PawPrint aria-hidden="true" /><span>All pets</span><small>Show every pet's appointments</small>{value === "all" && <Check aria-hidden="true" className="picker-check" />}</button>}{pets.map((pet) => <button className={pet.name === value ? "selected" : ""} type="button" role="option" aria-selected={pet.name === value} key={pet.name} onClick={() => { onChange(pet.name); setIsOpen(false); }}>
         {pet.species === "cat" ? <Cat aria-hidden="true" /> : <Dog aria-hidden="true" />}<span>{pet.name}</span><small>{pet.breed}</small>{pet.name === value && <Check aria-hidden="true" className="picker-check" />}
       </button>)}</div>}
     </div>
@@ -237,21 +246,42 @@ const ProfileScreen = ({ onBack, selectedPet, pets, isNew, onSaved }) => {
   );
 };
 
-const RecordsScreen = ({ pets, onNavigate }) => {
-  const [selectedPet, setSelectedPet] = useState("");
+const PetProfileScreen = ({ pet, onBack, onEdit }) => (
+  <main className="page-content">
+    <PageHeading title="Pet profile" subtitle="Your pet's details and health notes." onBack={onBack} action={<button className="icon-button" type="button" aria-label="Edit pet profile" onClick={onEdit}><PawPrint aria-hidden="true" /></button>} />
+    <section className="pet-detail-hero">
+      <span className="profile-pet-icon">{pet.species === "cat" ? <Cat aria-hidden="true" /> : <Dog aria-hidden="true" />}</span>
+      <div><h2>{pet.name}</h2><p>{pet.breed}</p></div>
+      <button className="outline-button" type="button" onClick={onEdit}>Edit</button>
+    </section>
+    <section className="record-section">
+      <h2>Basic information</h2>
+      <div className="pet-facts-grid"><div><span>Species</span><strong>{pet.species === "cat" ? "Cat" : "Dog"}</strong></div><div><span>Age</span><strong>{pet.age || "Not recorded"}</strong></div><div><span>Weight</span><strong>{pet.weight ? `${pet.weight} kg` : "Not recorded"}</strong></div><div><span>Blood type</span><strong>Not recorded</strong></div><div className="fact-wide"><span>Identification marks</span><strong>{pet.species === "cat" ? "White chest and paws" : "Dark brindle coat"}</strong></div></div>
+    </section>
+    <section className="record-section">
+      <div className="list-heading"><h2>Health notes</h2><button className="text-button" type="button" onClick={onEdit}>Edit details</button></div>
+      <RecordRow icon={<ShieldCheck />} title="Allergies" meta="None recorded" badge="Clear" />
+      <RecordRow icon={<HeartPulse />} title="Chronic conditions" meta="None recorded" badge="Clear" />
+      <RecordRow icon={<Pill />} title="Dietary restrictions" meta="No restrictions recorded" badge="Clear" />
+    </section>
+    <button className="primary-button" type="button" onClick={onEdit}>Edit pet details</button>
+  </main>
+);
+
+const RecordsScreen = ({ pets, onSelectPet, onNavigate }) => {
+  const [selectedPet, setSelectedPet] = useState(null);
   const [activeTab, setActiveTab] = useState("vaccinations");
   return (
     <main className="page-content">
-      <PageHeading title="Health records" subtitle={selectedPet ? `${selectedPet}'s vaccinations, visits and medications.` : "Choose a pet to view their health records."} onBack={() => onNavigate("home")} />
-      <PetPicker pets={pets} value={selectedPet} onChange={setSelectedPet} label="View records for" />
-      {!selectedPet ? <SelectionPrompt icon={<FileText />} title="Select a pet first" detail="Vaccines, medical history and medications will be shown for the pet you choose." /> : <>
+      <PageHeading title={selectedPet ? `${selectedPet.name}'s records` : "Health records"} subtitle={selectedPet ? `${selectedPet.breed} · ${selectedPet.weight || "--"} kg` : "Choose a pet to view their health records."} onBack={() => selectedPet ? setSelectedPet(null) : onNavigate("home")} />
+      {!selectedPet ? <section className="pet-record-list" aria-label="Select a pet record">{pets.map((pet) => <button className="pet-record-card" type="button" key={pet.name} onClick={() => { setSelectedPet(pet); onSelectPet(pet.name); }}><span className="profile-pet-icon">{pet.species === "cat" ? <Cat aria-hidden="true" /> : <Dog aria-hidden="true" />}</span><span className="pet-record-copy"><strong>{pet.name}</strong><small>{pet.breed}</small><small>{pet.weight ? `${pet.weight} kg` : "Weight not recorded"} · {pet.age || "Age not recorded"}</small></span><ChevronRight aria-hidden="true" /></button>)}</section> : <>
       <div className="record-health-banner"><HeartPulse aria-hidden="true" /><span><strong>Looking good</strong><small>Next vaccine due in 14 days</small></span><button type="button" onClick={() => onNavigate("schedule")}>Book visit</button></div>
       <div className="segmented-tabs" role="tablist" aria-label="Record type">
         <button className={activeTab === "vaccinations" ? "selected" : ""} type="button" role="tab" aria-selected={activeTab === "vaccinations"} onClick={() => setActiveTab("vaccinations")}>Vaccines</button>
         <button className={activeTab === "history" ? "selected" : ""} type="button" role="tab" aria-selected={activeTab === "history"} onClick={() => setActiveTab("history")}>Medical history</button>
         <button className={activeTab === "medications" ? "selected" : ""} type="button" role="tab" aria-selected={activeTab === "medications"} onClick={() => setActiveTab("medications")}>Meds</button>
       </div>
-      {activeTab === "vaccinations" && <section className="record-section"><h2>Upcoming</h2><RecordRow icon={<Syringe />} title="Rabies vaccine" meta="Due 29 Oct 2026" badge="Due soon" /><RecordRow icon={<Syringe />} title="DHPP booster" meta="Due 21 Oct 2026" badge="Scheduled" /><h2>Completed</h2><RecordRow icon={<Check />} title="Feline leukemia" meta="Given 12 Apr 2026 · Happy Pet Clinic" badge="Complete" /><RecordRow icon={<Check />} title="Rabies vaccine" meta="Given 29 Oct 2025 · Happy Pet Clinic" badge="Complete" /></section>}
+      {activeTab === "vaccinations" && <section className="record-section"><h2>Upcoming</h2><RecordRow icon={<Syringe />} title={selectedPet.species === "cat" ? "Rabies vaccine" : "DHPP booster"} meta="Due 29 Oct 2026" badge="Due soon" /><RecordRow icon={<Syringe />} title={selectedPet.species === "cat" ? "Feline leukemia" : "Leptospirosis"} meta="Due 21 Oct 2026" badge="Scheduled" /><h2>Completed</h2><RecordRow icon={<Check />} title={selectedPet.species === "cat" ? "Feline leukemia" : "DHPP vaccine"} meta="Given 12 Apr 2026 · Happy Pet Clinic" badge="Complete" /><RecordRow icon={<Check />} title="Rabies vaccine" meta="Given 29 Oct 2025 · Happy Pet Clinic" badge="Complete" /></section>}
       {activeTab === "history" && <section className="record-section"><h2>Visit history</h2><RecordRow icon={<Stethoscope />} title="Annual wellness exam" meta="12 Apr 2026 · Dr. Mina S." badge="Healthy" /><RecordRow icon={<CircleAlert />} title="Seasonal skin irritation" meta="03 Feb 2026 · Follow-up complete" badge="Resolved" /><RecordRow icon={<FileText />} title="Dental check" meta="20 Sep 2025 · No treatment needed" badge="Note" /><h2>Conditions & sensitivities</h2><div className="note-panel"><ShieldCheck aria-hidden="true" /><span><strong>No chronic conditions recorded</strong><small>Add allergies or ongoing care notes in the pet profile.</small></span><button type="button" onClick={() => onNavigate("profile")}>Edit</button></div></section>}
       {activeTab === "medications" && <section className="record-section"><h2>Current treatments</h2><RecordRow icon={<Pill />} title="Flea & tick prevention" meta="Next dose 01 Nov 2026 · Monthly" badge="Recurring" /><RecordRow icon={<Pill />} title="Omega-3 supplement" meta="1 softgel with food · Daily" badge="Active" /><h2>Prescription log</h2><RecordRow icon={<FileText />} title="Cetirizine 5 mg" meta="Prescribed 03 Feb 2026 · 5 days" badge="Completed" /></section>}
       <button className="outline-button full-button" type="button" onClick={() => onNavigate("profile")}>Update health details <ChevronRight aria-hidden="true" /></button>
@@ -268,30 +298,74 @@ const RecordRow = ({ icon, title, meta, badge }) => (
   <article className="record-row"><span className="record-row-icon">{icon}</span><span className="record-row-copy"><strong>{title}</strong><small>{meta}</small></span><span className={`status-badge ${badge === "Due soon" ? "warning" : ""}`}>{badge}</span></article>
 );
 
-const ScheduleScreen = ({ pets, onNavigate, onBooked }) => {
-  const [selectedPet, setSelectedPet] = useState("");
+const ScheduleScreen = ({ pets, appointments, onNavigate, onBooked }) => {
+  const [selectedPet, setSelectedPet] = useState("all");
+  const [bookingPet, setBookingPet] = useState("");
   const [booked, setBooked] = useState(false);
   const [remindersOn, setRemindersOn] = useState(true);
-  const handleBooking = (event) => { event.preventDefault(); setBooked(true); onBooked(); };
+  const [calendarMonth, setCalendarMonth] = useState(() => {
+    const today = new Date();
+    return new Date(today.getFullYear(), today.getMonth(), 1);
+  });
+  const [selectedDate, setSelectedDate] = useState(() => {
+    const today = new Date();
+    return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+  });
+  const [selectedAppointment, setSelectedAppointment] = useState(null);
+  const [showBookingForm, setShowBookingForm] = useState(false);
+  const monthOffset = (new Date(calendarMonth.getFullYear(), calendarMonth.getMonth(), 1).getDay() + 6) % 7;
+  const daysInMonth = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + 1, 0).getDate();
+  const calendarCellCount = Math.ceil((monthOffset + daysInMonth) / 7) * 7;
+  const calendarDates = Array.from({ length: calendarCellCount }, (_, index) => index - monthOffset + 1);
+  const toIsoDate = (day) => `${calendarMonth.getFullYear()}-${String(calendarMonth.getMonth() + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+  const appointmentsForPet = appointments.filter((appointment) => selectedPet === "all" || appointment.petName === selectedPet);
+  const selectedDayAppointments = appointmentsForPet.filter((appointment) => appointment.date === selectedDate);
+  const handleBooking = (event) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const bookedDate = data.get("date").toString();
+    const [year, month, day] = bookedDate.split("-").map(Number);
+    const appointment = { id: `appointment-${Date.now()}`, petName: data.get("petName").toString(), title: data.get("reason").toString(), type: data.get("reason").toString() === "Vaccination" ? "Vaccine" : "Visit", date: bookedDate, time: data.get("time").toString(), clinic: data.get("clinic").toString(), notes: data.get("notes").toString() };
+    onBooked(appointment);
+    setCalendarMonth(new Date(year, month - 1, 1));
+    setSelectedDate(bookedDate);
+    setSelectedAppointment(appointment);
+    setBooked(true);
+    setShowBookingForm(false);
+  };
   return (
     <main className="page-content">
-      <PageHeading title="Appointments" subtitle="Choose a pet before viewing or booking an appointment." onBack={() => onNavigate("home")} />
-      <PetPicker pets={pets} value={selectedPet} onChange={(petName) => { setSelectedPet(petName); setBooked(false); }} label="Appointment for" />
-      {!selectedPet ? <SelectionPrompt icon={<CalendarDays />} title="Who is this appointment for?" detail="Select a pet to see their upcoming visits, book care and manage reminders." /> : <>
-      <section className="upcoming-section"><div className="section-heading"><h2>NEXT APPOINTMENT</h2></div><button className="appointment-card" type="button"><span className="appointment-icon"><CalendarDays aria-hidden="true" /></span><span className="appointment-copy"><strong>DHPP booster</strong><small>21 Oct · 10:30 AM · Happy Pet Clinic</small></span><ChevronRight aria-hidden="true" className="appointment-arrow" /></button></section>
-      <form className="form-panel booking-form" onSubmit={handleBooking}>
-        <h2>Book a visit for {selectedPet}</h2>
-        {booked && <div className="success-banner"><Check aria-hidden="true" /> Appointment saved to your schedule.</div>}
-        <label>Reason for visit<select defaultValue="Vaccination"><option>Vaccination</option><option>Wellness check</option><option>New concern</option><option>Follow-up</option></select></label>
-        <div className="form-grid"><label>Preferred date<input type="date" required defaultValue="2026-10-21" /></label><label>Preferred time<select defaultValue="10:30"><option value="10:30">10:30 AM</option><option value="13:00">1:00 PM</option><option value="15:30">3:30 PM</option></select></label></div>
-        <label>Clinic<select defaultValue="happy"><option value="happy">Happy Pet Clinic</option><option>Green Paws Veterinary</option><option>City Animal Hospital</option></select></label>
-        <label>Notes for the vet<textarea rows="2" placeholder="Anything the clinic should know?" /></label>
+      <PageHeading title="Appointments" subtitle="Browse every pet's calendar or filter to one pet." onBack={() => onNavigate("home")} />
+      <PetPicker pets={pets} value={selectedPet} onChange={(petName) => { setSelectedPet(petName); setBooked(false); setSelectedAppointment(null); }} label="Show appointments for" includeAll />
+      <>
+      <section className="calendar-panel">
+        <div className="calendar-title-row"><div><span className="page-eyebrow">APPOINTMENT CALENDAR</span><h2>{calendarMonth.toLocaleDateString("en-US", { month: "long", year: "numeric" })}</h2></div><div className="calendar-controls"><button className="icon-button" type="button" aria-label="Previous month" onClick={() => { const month = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() - 1, 1); setCalendarMonth(month); setSelectedDate(`${month.getFullYear()}-${String(month.getMonth() + 1).padStart(2, "0")}-01`); setSelectedAppointment(null); }}><ChevronLeft aria-hidden="true" /></button><button className="icon-button" type="button" aria-label="Next month" onClick={() => { const month = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + 1, 1); setCalendarMonth(month); setSelectedDate(`${month.getFullYear()}-${String(month.getMonth() + 1).padStart(2, "0")}-01`); setSelectedAppointment(null); }}><ChevronRight aria-hidden="true" /></button></div></div>
+        <div className="calendar-legend" aria-label="Calendar event types"><span><Syringe aria-hidden="true" /> Vaccine</span><span><CalendarDays aria-hidden="true" /> Visit</span><span className="past-legend"><Check aria-hidden="true" /> Past</span></div>
+        <div className="calendar-grid calendar-weekdays">{"MTWTFSS".split("").map((day, index) => <span key={`${day}-${index}`}>{day}</span>)}</div>
+        <div className="calendar-grid calendar-days">{calendarDates.map((day, index) => {
+          const dateValue = day > 0 && day <= daysInMonth ? toIsoDate(day) : "";
+          const events = appointmentsForPet.filter((appointment) => appointment.date === dateValue);
+          const isPast = dateValue && dateValue < new Date().toLocaleDateString("en-CA");
+          const isToday = dateValue === new Date().toLocaleDateString("en-CA");
+          return day > 0 && day <= daysInMonth ? <button className={`calendar-day ${selectedDate === dateValue ? "selected" : ""} ${events.length ? "has-event" : ""} ${events.length && isPast ? "past-event" : ""} ${isToday ? "is-today" : ""}`} type="button" key={dateValue} aria-label={`${day} ${calendarMonth.toLocaleDateString("en-US", { month: "long" })}${events.length ? `, ${events.map((event) => event.title).join(", ")}` : ""}`} onClick={() => { setSelectedDate(dateValue); setSelectedAppointment(events[0] || null); }}><span>{day}</span>{events.slice(0, 2).map((appointment) => <small className={`calendar-event-label ${appointment.type.toLowerCase()}`} key={appointment.id}>{appointment.type === "Vaccine" ? <Syringe aria-hidden="true" /> : appointment.type === "Medication" ? <Pill aria-hidden="true" /> : <CalendarDays aria-hidden="true" />}{appointment.type === "Vaccine" ? "Vax" : appointment.type === "Medication" ? "Meds" : "Visit"}</small>)}{events.length > 2 && <small className="calendar-more">+{events.length - 2}</small>}</button> : <span className="calendar-day empty" key={`empty-${index}`} />;
+        })}</div>
+      </section>
+      <section className="selected-date-section"><div className="section-heading"><h2>{new Date(`${selectedDate}T12:00:00`).toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" })}</h2></div>{selectedDayAppointments.length ? selectedDayAppointments.map((appointment) => <button className={`appointment-card ${selectedAppointment?.id === appointment.id ? "appointment-selected" : ""}`} type="button" key={appointment.id} onClick={() => setSelectedAppointment(appointment)}><span className="appointment-icon">{appointment.type === "Vaccine" ? <Syringe aria-hidden="true" /> : appointment.type === "Medication" ? <Pill aria-hidden="true" /> : <CalendarDays aria-hidden="true" />}</span><span className="appointment-copy"><strong>{appointment.title}</strong><small className="appointment-pet-name"><PawPrint aria-hidden="true" /> {appointment.petName}</small><small>{appointment.time} · {appointment.clinic}</small></span><ChevronRight aria-hidden="true" className="appointment-arrow" /></button>) : <p className="calendar-empty-day">No appointments on this date.</p>}{selectedAppointment && selectedDayAppointments.some((appointment) => appointment.id === selectedAppointment.id) && <article className="appointment-detail"><span className="appointment-type-label">{selectedAppointment.type === "Vaccine" ? <Syringe aria-hidden="true" /> : selectedAppointment.type === "Medication" ? <Pill aria-hidden="true" /> : <CalendarDays aria-hidden="true" />} {selectedAppointment.type}{selectedAppointment.date < new Date().toLocaleDateString("en-CA") && <span className="past-status">Completed</span>}</span><h3>{selectedAppointment.title}</h3><p><PawPrint aria-hidden="true" /> {selectedAppointment.petName}</p><p><Clock3 aria-hidden="true" /> {selectedAppointment.time}</p><p><MapPin aria-hidden="true" /> {selectedAppointment.clinic}</p>{selectedAppointment.notes && <p className="appointment-note">{selectedAppointment.notes}</p>}</article>}</section>
+      <button className="primary-button" type="button" onClick={() => { setShowBookingForm(!showBookingForm); setBooked(false); }}><CalendarDays aria-hidden="true" /> {showBookingForm ? "Close booking form" : "Book appointment"}</button>
+      {booked && <div className="success-banner"><Check aria-hidden="true" /> Appointment added to your calendar.</div>}
+      {showBookingForm && <form className="form-panel booking-form" onSubmit={handleBooking}>
+        <h2>Book an appointment</h2>
+        <label>Appointment for<select name="petName" required value={bookingPet} onChange={(event) => setBookingPet(event.target.value)}><option value="" disabled>Select a pet</option>{pets.map((pet) => <option key={pet.name} value={pet.name}>{pet.species === "cat" ? "Cat" : "Dog"} · {pet.name}</option>)}</select></label>
+        <label>Reason for visit<select name="reason" defaultValue="Vaccination"><option>Vaccination</option><option>Wellness check</option><option>New concern</option><option>Follow-up</option></select></label>
+        <div className="form-grid"><label>Preferred date<input name="date" type="date" required value={selectedDate} onChange={(event) => setSelectedDate(event.target.value)} /></label><label>Preferred time<select name="time" defaultValue="10:30 AM"><option>10:30 AM</option><option>1:00 PM</option><option>3:30 PM</option></select></label></div>
+        <label>Clinic<select name="clinic" defaultValue="Happy Pet Clinic"><option>Happy Pet Clinic</option><option>Green Paws Veterinary</option><option>City Animal Hospital</option></select></label>
+        <label>Notes for the vet<textarea name="notes" rows="2" placeholder="Anything the clinic should know?" /></label>
         <button className="primary-button" type="submit"><CalendarDays aria-hidden="true" /> Confirm appointment</button>
         <button className="text-button" type="button" onClick={() => onNavigate("clinics")}><MapPin aria-hidden="true" /> Browse nearby clinics</button>
-      </form>
+      </form>}
       <section className="reminder-panel"><div><BellRing aria-hidden="true" /><span><strong>Care reminders</strong><small>Vaccines and recurring treatments</small></span></div><button className={`toggle ${remindersOn ? "on" : ""}`} type="button" role="switch" aria-checked={remindersOn} aria-label="Toggle care reminders" onClick={() => setRemindersOn(!remindersOn)}><span /></button></section>
       <section className="record-section compact-list"><h2>Recurring care</h2><RecordRow icon={<Pill />} title="Flea & tick prevention" meta="Monthly · Next dose 01 Nov" badge={remindersOn ? "Reminder on" : "Paused"} /><RecordRow icon={<Syringe />} title="Rabies vaccine" meta="Annual · Due 29 Oct" badge={remindersOn ? "Reminder on" : "Paused"} /></section>
-      </>}
+      </>
     </main>
   );
 };
@@ -300,6 +374,7 @@ const ConsultScreen = ({ pets, onNavigate }) => {
   const [selectedPet, setSelectedPet] = useState("");
   const [triage, setTriage] = useState(false);
   const [channel, setChannel] = useState("chat");
+  const [selectedTopic, setSelectedTopic] = useState("");
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
   const sendMessage = (event) => { event.preventDefault(); if (!message.trim()) return; setMessages([...messages, { from: "you", text: message.trim() }]); setMessage(""); };
@@ -308,8 +383,7 @@ const ConsultScreen = ({ pets, onNavigate }) => {
       <PageHeading title="Vet consultation" subtitle={selectedPet ? `For ${selectedPet} · non-emergency questions and follow-ups.` : "Choose a pet before starting a consultation."} onBack={() => triage ? setTriage(false) : onNavigate("home")} />
       <PetPicker pets={pets} value={selectedPet} onChange={(petName) => { setSelectedPet(petName); setTriage(false); setMessages([]); }} label="Consultation for" />
       {!selectedPet ? <SelectionPrompt icon={<Stethoscope />} title="Who needs care advice?" detail="Choose a pet so the veterinary team can see the right health context." /> : !triage ? <>
-        <div className="vet-profile"><div className="vet-avatar"><Stethoscope aria-hidden="true" /></div><div><strong>Dr. Mina S.</strong><span>Small animal veterinarian</span><small><span className="online-dot" /> Available now · Usually replies in 5 min</small></div><span className="rating"><Star aria-hidden="true" /> 4.9</span></div>
-        <section className="form-panel triage-panel"><span className="page-eyebrow">QUICK CHECK-IN</span><h2>What can we help with?</h2><p>Tell us a little about the concern so the vet can prepare.</p><div className="choice-grid"><button type="button" onClick={() => setChannel("chat")}>Eating or digestion</button><button type="button" onClick={() => setChannel("chat")}>Skin or itching</button><button type="button" onClick={() => setChannel("video")}>Behavior change</button><button type="button" onClick={() => setChannel("chat")}>Follow-up question</button></div><label>How long has this been happening?<select defaultValue="Today"><option>Today</option><option>1-3 days</option><option>More than 3 days</option><option>Ongoing</option></select></label><div className="consult-disclaimer"><CircleAlert aria-hidden="true" /> For urgent or life-threatening symptoms, contact an emergency clinic immediately.</div><div className="channel-picker"><button className={channel === "chat" ? "selected" : ""} type="button" onClick={() => setChannel("chat")}><MessageCircle aria-hidden="true" /> Chat</button><button className={channel === "video" ? "selected" : ""} type="button" onClick={() => setChannel("video")}><Video aria-hidden="true" /> Video</button></div><button className="primary-button" type="button" onClick={() => setTriage(true)}>Continue to {channel === "chat" ? "chat" : "video consult"}</button></section>
+        <section className="form-panel triage-panel"><span className="page-eyebrow">QUICK CHECK-IN</span><h2>What can we help with?</h2><p>Tell us a little about the concern so the vet can prepare.</p><div className="choice-grid">{["Eating or digestion", "Skin or itching", "Behavior change", "Follow-up question", "Other"].map((topic) => <button className={selectedTopic === topic ? "selected" : ""} type="button" key={topic} aria-pressed={selectedTopic === topic} onClick={() => setSelectedTopic(topic)}>{topic}</button>)}</div>{selectedTopic === "Other" && <label>Describe the concern<input placeholder="What would you like to discuss?" /></label>}<label>How long has this been happening?<select defaultValue="Today"><option>Today</option><option>1-3 days</option><option>More than 3 days</option><option>Ongoing</option></select></label><div className="consult-disclaimer"><CircleAlert aria-hidden="true" /> For urgent or life-threatening symptoms, contact an emergency clinic immediately.</div><div className="channel-picker"><button className={channel === "chat" ? "selected" : ""} type="button" onClick={() => setChannel("chat")}><MessageCircle aria-hidden="true" /> Chat</button><button className={channel === "video" ? "selected" : ""} type="button" onClick={() => setChannel("video")}><Video aria-hidden="true" /> Video</button></div><button className="primary-button" type="button" onClick={() => { setMessages(selectedTopic ? [{ from: "you", text: `Topic: ${selectedTopic}` }] : []); setTriage(true); }}>Continue to {channel === "chat" ? "chat" : "video consult"}</button></section>
       </> : <section className="chat-panel"><div className="chat-header"><div className="vet-avatar"><Stethoscope aria-hidden="true" /></div><span><strong>Dr. Mina S.</strong><small><span className="online-dot" /> Secure {channel} · Connected</small></span>{channel === "video" && <button className="icon-button" type="button" aria-label="Call"><Video aria-hidden="true" /></button>}</div><div className="chat-messages">{messages.length === 0 && <p className="chat-message received">Hi! I'm Dr. Mina. What would you like help with for {selectedPet}?</p>}{messages.map((item, index) => <p className={`chat-message ${item.from === "you" ? "sent" : "received"}`} key={`${item.from}-${index}`}>{item.text}</p>)}{channel === "video" && <div className="video-placeholder"><Video aria-hidden="true" /><span>Video consultation connected</span></div>}</div><form className="chat-compose" onSubmit={sendMessage}><input aria-label="Message vet" value={message} onChange={(event) => setMessage(event.target.value)} placeholder="Write a message..." /><button type="submit" aria-label="Send message"><Send aria-hidden="true" /></button></form></section>}
       <div className="privacy-note"><ShieldCheck aria-hidden="true" /> Your consultation is private and linked to {selectedPet}'s record.</div>
     </main>
