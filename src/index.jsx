@@ -35,6 +35,7 @@ import {
   Video,
 } from "lucide-react";
 import catTuxedo1 from "./cat_tuxedo.svg";
+import dogIllustration from "./dog.png";
 import "./style.css";
 
 export const Iphone = () => {
@@ -172,7 +173,7 @@ const HomeScreen = ({ pets, onNavigate, onAddPet, selectedPet, onSelectPet }) =>
         </div>
         <div className="welcome-art">
           <span className="welcome-sparkle" aria-hidden="true">✧</span>
-          {isCat ? <img className="cat-tuxedo" alt="Tuxedo cat illustration" src={catTuxedo1} /> : <Dog className="dog-art" aria-label="Dog icon" />}
+          {isCat ? <img className="cat-tuxedo" alt="Tuxedo cat illustration" src={catTuxedo1} /> : <img className="dog-art" alt="Chok Dee illustration" src={dogIllustration} />}
         </div>
         <button className="vaccine-alert" type="button" onClick={() => onNavigate("records")}>
           <Syringe aria-hidden="true" />

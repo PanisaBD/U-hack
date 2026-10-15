@@ -224,12 +224,25 @@ button:focus-visible {
 
 .cat-tuxedo {
   position: absolute;
-  right: 15px;
-  bottom: 0;
+  right: 13px;
+  bottom: 2px;
   display: block;
-  width: 95px;
-  height: 142px;
+  width: 90px;
+  height: 134px;
   object-fit: contain;
+  transform: translate(-5px, -22px);
+}
+
+.dog-art {
+  position: absolute;
+  right: -3px;
+  bottom: 2px;
+  display: block;
+  width: 142px;
+  height: 178px;
+  object-fit: contain;
+  object-position: center bottom;
+  transform: translateY(-10px);
 }
 
 .welcome-sparkle {
@@ -520,9 +533,18 @@ button:focus-visible {
   }
 
   .cat-tuxedo {
-    right: 7px;
-    width: 82px;
-    height: auto;
+    right: 10px;
+    bottom: 2px;
+    width: 76px;
+    height: 113px;
+    transform: translate(-4px, -18px);
+  }
+
+  .dog-art {
+    right: -5px;
+    bottom: 2px;
+    width: 124px;
+    height: 156px;
   }
 
   .vaccine-alert {
