@@ -13,6 +13,7 @@ import {
   Clock3,
   Dog,
   Download,
+  Fish,
   FileText,
   FlaskConical,
   HeartPulse,
@@ -31,7 +32,9 @@ import {
   Star,
   Stethoscope,
   Syringe,
+  Turtle,
   UserRound,
+  Rabbit,
   Video,
 } from "lucide-react";
 import catTuxedo1 from "./cat_tuxedo.svg";
@@ -77,7 +80,7 @@ export const Iphone = () => {
   return (
     <div className="iphone">
       <header className="app-header">
-        <button className="avatar-button" type="button" aria-label="Open profile" onClick={() => openPage("profile")}>
+        <button className="avatar-button" type="button" aria-label="Edit your profile" onClick={() => openPage("owner-profile")}>
           <UserRound aria-hidden="true" />
         </button>
         <div className="header-spacer" />
@@ -88,6 +91,7 @@ export const Iphone = () => {
       </header>
 
       {page === "home" && <HomeScreen pets={pets} onNavigate={openPage} onAddPet={startAddPet} selectedPet={selectedPet} onSelectPet={setSelectedPet} />}
+      {page === "owner-profile" && <OwnerProfileScreen onBack={() => openPage("home")} onSaved={() => { openPage("home"); showNotice("Your profile was saved"); }} />}
       {page === "profile" && <PetProfileScreen pet={pets.find((pet) => pet.name === selectedPet) || pets[0]} onBack={() => openPage("home")} onEdit={() => openPage("edit-profile")} />}
       {page === "edit-profile" && <ProfileScreen onBack={() => openPage(isCreatingPet ? "home" : "profile")} selectedPet={selectedPet} pets={pets} isNew={isCreatingPet} onSaved={(profile) => { setPets((currentPets) => isCreatingPet ? [...currentPets, profile] : currentPets.map((pet) => pet.name === selectedPet ? profile : pet)); setSelectedPet(profile.name); setIsCreatingPet(false); openPage(isCreatingPet ? "home" : "profile"); showNotice(isCreatingPet ? "Pet profile created" : "Pet profile saved"); }} />}
       {page === "records" && <RecordsScreen pets={pets} onSelectPet={setSelectedPet} onNavigate={openPage} />}
@@ -135,6 +139,38 @@ const PageHeading = ({ title, subtitle, onBack, action }) => (
   </div>
 );
 
+const SpeciesIcon = ({ species, ...props }) => {
+  const Icon = {
+    cat: Cat,
+    dog: Dog,
+    rabbit: Rabbit,
+    fish: Fish,
+    turtle: Turtle,
+    other: PawPrint,
+  }[species] || PawPrint;
+  return <Icon aria-hidden="true" {...props} />;
+};
+
+const OwnerProfileScreen = ({ onBack, onSaved }) => (
+  <main className="page-content">
+    <PageHeading title="Your profile" subtitle="Manage your account and contact details." onBack={onBack} />
+    <form className="form-panel" onSubmit={(event) => { event.preventDefault(); onSaved(); }}>
+      <div className="profile-summary">
+        <span className="profile-pet-icon"><UserRound aria-hidden="true" /></span>
+        <div><strong>Pet parent</strong><span>Account information</span></div>
+      </div>
+      <h2>Personal information</h2>
+      <div className="form-grid">
+        <label className="field-wide">Full name<input name="ownerName" defaultValue="Pet Parent" required /></label>
+        <label>Email address<input name="ownerEmail" type="email" placeholder="you@example.com" /></label>
+        <label>Phone number<input name="ownerPhone" type="tel" placeholder="Add phone number" /></label>
+        <label className="field-wide">Home address<textarea name="ownerAddress" rows="2" placeholder="Add address for nearby clinic suggestions" /></label>
+      </div>
+      <button className="primary-button" type="submit">Save profile</button>
+    </form>
+  </main>
+);
+
 const PetPicker = ({ pets, value, onChange, label = "Select a pet", includeAll = false }) => {
   const [isOpen, setIsOpen] = useState(false);
   const activePet = pets.find((pet) => pet.name === value);
@@ -142,11 +178,11 @@ const PetPicker = ({ pets, value, onChange, label = "Select a pet", includeAll =
     <div className="pet-picker">
       <span className="field-label">{label}</span>
       <button className="pet-picker-trigger" type="button" aria-haspopup="listbox" aria-expanded={isOpen} onClick={() => setIsOpen(!isOpen)}>
-        {value === "all" ? <><PawPrint aria-hidden="true" /><span>All pets</span></> : activePet ? <>{activePet.species === "cat" ? <Cat aria-hidden="true" /> : <Dog aria-hidden="true" />}<span>{activePet.name}</span></> : <><PawPrint aria-hidden="true" /><span>Choose a pet</span></>}
+        {value === "all" ? <><PawPrint aria-hidden="true" /><span>All pets</span></> : activePet ? <><SpeciesIcon species={activePet.species} /><span>{activePet.name}</span></> : <><PawPrint aria-hidden="true" /><span>Choose a pet</span></>}
         <ChevronDown aria-hidden="true" className={isOpen ? "is-open" : ""} />
       </button>
       {isOpen && <div className="pet-picker-options" role="listbox" aria-label={label}>{includeAll && <button className={value === "all" ? "selected" : ""} type="button" role="option" aria-selected={value === "all"} onClick={() => { onChange("all"); setIsOpen(false); }}><PawPrint aria-hidden="true" /><span>All pets</span><small>Show every pet's appointments</small>{value === "all" && <Check aria-hidden="true" className="picker-check" />}</button>}{pets.map((pet) => <button className={pet.name === value ? "selected" : ""} type="button" role="option" aria-selected={pet.name === value} key={pet.name} onClick={() => { onChange(pet.name); setIsOpen(false); }}>
-        {pet.species === "cat" ? <Cat aria-hidden="true" /> : <Dog aria-hidden="true" />}<span>{pet.name}</span><small>{pet.breed}</small>{pet.name === value && <Check aria-hidden="true" className="picker-check" />}
+        <SpeciesIcon species={pet.species} /><span>{pet.name}</span><small>{pet.breed}</small>{pet.name === value && <Check aria-hidden="true" className="picker-check" />}
       </button>)}</div>}
     </div>
   );
@@ -155,11 +191,12 @@ const PetPicker = ({ pets, value, onChange, label = "Select a pet", includeAll =
 const HomeScreen = ({ pets, onNavigate, onAddPet, selectedPet, onSelectPet }) => {
   const activePet = pets.find((pet) => pet.name === selectedPet) || pets[0];
   const isCat = activePet.species === "cat";
+  const isDog = activePet.species === "dog";
   return (
     <main className="dashboard">
       <div className="pet-switcher" aria-label="Choose a pet">
         {pets.map((pet) => <button className={`pet-chip ${pet.name === selectedPet ? "is-selected" : ""}`} type="button" aria-pressed={pet.name === selectedPet} key={pet.name} onClick={() => onSelectPet(pet.name)}>
-          {pet.name} {pet.species === "cat" ? <Cat aria-hidden="true" /> : <Dog aria-hidden="true" />}
+          {pet.name} <SpeciesIcon species={pet.species} />
         </button>)}
         <button className="add-pet" type="button" onClick={onAddPet}>+ Add pet</button>
       </div>
@@ -173,7 +210,7 @@ const HomeScreen = ({ pets, onNavigate, onAddPet, selectedPet, onSelectPet }) =>
         </div>
         <div className="welcome-art">
           <span className="welcome-sparkle" aria-hidden="true">✧</span>
-          {isCat ? <img className="cat-tuxedo" alt="Tuxedo cat illustration" src={catTuxedo1} /> : <img className="dog-art" alt="Chok Dee illustration" src={dogIllustration} />}
+          {isCat ? <img className="cat-tuxedo" alt="Tuxedo cat illustration" src={catTuxedo1} /> : isDog ? <img className="dog-art" alt={`${activePet.name} illustration`} src={dogIllustration} /> : <SpeciesIcon species={activePet.species} className="other-pet-art" />}
         </div>
         <button className="vaccine-alert" type="button" onClick={() => onNavigate("records")}>
           <Syringe aria-hidden="true" />
@@ -214,25 +251,26 @@ const HomeScreen = ({ pets, onNavigate, onAddPet, selectedPet, onSelectPet }) =>
 
 const ProfileScreen = ({ onBack, selectedPet, pets, isNew, onSaved }) => {
   const pet = pets.find((item) => item.name === selectedPet) || pets[0];
+  const [species, setSpecies] = useState(isNew ? "cat" : pet.species);
   return (
   <main className="page-content">
     <PageHeading title={isNew ? "Add a pet" : "Pet profile"} subtitle="Keep important details in one place." onBack={onBack} />
     <form className="form-panel" onSubmit={(event) => { event.preventDefault(); const formData = new FormData(event.currentTarget); onSaved({ name: formData.get("petName").toString().trim(), species: formData.get("species").toString(), breed: formData.get("breed").toString().trim(), weight: formData.get("weight").toString(), age: formData.get("age").toString() }); }}>
       <div className="profile-summary">
-        <span className="profile-pet-icon">{(isNew ? "cat" : pet.species) === "cat" ? <Cat aria-hidden="true" /> : <Dog aria-hidden="true" />}</span>
+        <span className="profile-pet-icon"><SpeciesIcon species={species} /></span>
         <div><strong>{isNew ? "New pet profile" : selectedPet}</strong><span>{isNew ? "Add health details to get started" : pet.breed}</span></div>
         {!isNew && <span className="verified-label"><ShieldCheck aria-hidden="true" /> Owner</span>}
       </div>
       <h2>About your pet</h2>
       <div className="form-grid">
         <label>Pet name<input name="petName" required defaultValue={isNew ? "" : selectedPet} placeholder="e.g. Bat Man" /></label>
-        <label>Species<select name="species" defaultValue={isNew ? "cat" : pet.species}><option value="cat">Cat</option><option value="dog">Dog</option></select></label>
+        <label>Species<select name="species" value={species} onChange={(event) => setSpecies(event.target.value)}><option value="cat">Cat</option><option value="dog">Dog</option><option value="rabbit">Rabbit</option><option value="fish">Fish</option><option value="turtle">Turtle</option><option value="other">Other</option></select></label>
         <label>Breed<input name="breed" required defaultValue={isNew ? "" : pet.breed} placeholder="Breed" /></label>
         <label>Age<input name="age" defaultValue={isNew ? "" : pet.age} placeholder="e.g. 3 yrs" /></label>
         <label>Weight<input name="weight" type="number" defaultValue={isNew ? "" : pet.weight} step="0.1" /> <span className="input-suffix">kg</span></label>
         <label>Blood type<input placeholder="Not recorded" /></label>
-        <label>Microchip ID<input placeholder="Add identification number" /></label>
-        <label className="field-wide">Identification marks<input defaultValue={isNew ? "" : pet.species === "cat" ? "White chest and paws" : "Dark brindle coat"} /></label>
+        <label className="field-wide">Microchip ID<input placeholder="Add identification number" /></label>
+        <label className="field-wide">Identification marks<input defaultValue={isNew ? "" : pet.species === "cat" ? "White chest and paws" : pet.species === "dog" ? "Dark brindle coat" : ""} /></label>
       </div>
       <h2>Health notes</h2>
       <div className="form-grid">
@@ -248,18 +286,17 @@ const ProfileScreen = ({ onBack, selectedPet, pets, isNew, onSaved }) => {
 
 const PetProfileScreen = ({ pet, onBack, onEdit }) => (
   <main className="page-content">
-    <PageHeading title="Pet profile" subtitle="Your pet's details and health notes." onBack={onBack} action={<button className="icon-button" type="button" aria-label="Edit pet profile" onClick={onEdit}><PawPrint aria-hidden="true" /></button>} />
+    <PageHeading title="Pet profile" subtitle="Your pet's details and health notes." onBack={onBack} />
     <section className="pet-detail-hero">
-      <span className="profile-pet-icon">{pet.species === "cat" ? <Cat aria-hidden="true" /> : <Dog aria-hidden="true" />}</span>
+      <span className="profile-pet-icon"><SpeciesIcon species={pet.species} /></span>
       <div><h2>{pet.name}</h2><p>{pet.breed}</p></div>
-      <button className="outline-button" type="button" onClick={onEdit}>Edit</button>
     </section>
     <section className="record-section">
       <h2>Basic information</h2>
-      <div className="pet-facts-grid"><div><span>Species</span><strong>{pet.species === "cat" ? "Cat" : "Dog"}</strong></div><div><span>Age</span><strong>{pet.age || "Not recorded"}</strong></div><div><span>Weight</span><strong>{pet.weight ? `${pet.weight} kg` : "Not recorded"}</strong></div><div><span>Blood type</span><strong>Not recorded</strong></div><div className="fact-wide"><span>Identification marks</span><strong>{pet.species === "cat" ? "White chest and paws" : "Dark brindle coat"}</strong></div></div>
+      <div className="pet-facts-grid"><div><span>Species</span><strong>{speciesLabels[pet.species] || "Other"}</strong></div><div><span>Age</span><strong>{pet.age || "Not recorded"}</strong></div><div><span>Weight</span><strong>{pet.weight ? `${pet.weight} kg` : "Not recorded"}</strong></div><div><span>Blood type</span><strong>Not recorded</strong></div><div className="fact-wide"><span>Identification marks</span><strong>{pet.species === "cat" ? "White chest and paws" : pet.species === "dog" ? "Dark brindle coat" : "Not recorded"}</strong></div></div>
     </section>
     <section className="record-section">
-      <div className="list-heading"><h2>Health notes</h2><button className="text-button" type="button" onClick={onEdit}>Edit details</button></div>
+      <div className="list-heading"><h2>Health notes</h2></div>
       <RecordRow icon={<ShieldCheck />} title="Allergies" meta="None recorded" badge="Clear" />
       <RecordRow icon={<HeartPulse />} title="Chronic conditions" meta="None recorded" badge="Clear" />
       <RecordRow icon={<Pill />} title="Dietary restrictions" meta="No restrictions recorded" badge="Clear" />
@@ -274,7 +311,7 @@ const RecordsScreen = ({ pets, onSelectPet, onNavigate }) => {
   return (
     <main className="page-content">
       <PageHeading title={selectedPet ? `${selectedPet.name}'s records` : "Health records"} subtitle={selectedPet ? `${selectedPet.breed} · ${selectedPet.weight || "--"} kg` : "Choose a pet to view their health records."} onBack={() => selectedPet ? setSelectedPet(null) : onNavigate("home")} />
-      {!selectedPet ? <section className="pet-record-list" aria-label="Select a pet record">{pets.map((pet) => <button className="pet-record-card" type="button" key={pet.name} onClick={() => { setSelectedPet(pet); onSelectPet(pet.name); }}><span className="profile-pet-icon">{pet.species === "cat" ? <Cat aria-hidden="true" /> : <Dog aria-hidden="true" />}</span><span className="pet-record-copy"><strong>{pet.name}</strong><small>{pet.breed}</small><small>{pet.weight ? `${pet.weight} kg` : "Weight not recorded"} · {pet.age || "Age not recorded"}</small></span><ChevronRight aria-hidden="true" /></button>)}</section> : <>
+      {!selectedPet ? <section className="pet-record-list" aria-label="Select a pet record">{pets.map((pet) => <button className="pet-record-card" type="button" key={pet.name} onClick={() => { setSelectedPet(pet); onSelectPet(pet.name); }}><span className="profile-pet-icon"><SpeciesIcon species={pet.species} /></span><span className="pet-record-copy"><strong>{pet.name}</strong><small>{pet.breed}</small><small>{pet.weight ? `${pet.weight} kg` : "Weight not recorded"} · {pet.age || "Age not recorded"}</small></span><ChevronRight aria-hidden="true" /></button>)}</section> : <>
       <div className="record-health-banner"><HeartPulse aria-hidden="true" /><span><strong>Looking good</strong><small>Next vaccine due in 14 days</small></span><button type="button" onClick={() => onNavigate("schedule")}>Book visit</button></div>
       <div className="segmented-tabs" role="tablist" aria-label="Record type">
         <button className={activeTab === "vaccinations" ? "selected" : ""} type="button" role="tab" aria-selected={activeTab === "vaccinations"} onClick={() => setActiveTab("vaccinations")}>Vaccines</button>
@@ -293,6 +330,8 @@ const RecordsScreen = ({ pets, onSelectPet, onNavigate }) => {
 const SelectionPrompt = ({ icon, title, detail }) => (
   <section className="selection-prompt"><span>{icon}</span><h2>{title}</h2><p>{detail}</p></section>
 );
+
+const speciesLabels = { cat: "Cat", dog: "Dog", rabbit: "Rabbit", fish: "Fish", turtle: "Turtle", other: "Other" };
 
 const RecordRow = ({ icon, title, meta, badge }) => (
   <article className="record-row"><span className="record-row-icon">{icon}</span><span className="record-row-copy"><strong>{title}</strong><small>{meta}</small></span><span className={`status-badge ${badge === "Due soon" ? "warning" : ""}`}>{badge}</span></article>
@@ -355,7 +394,7 @@ const ScheduleScreen = ({ pets, appointments, onNavigate, onBooked }) => {
       {booked && <div className="success-banner"><Check aria-hidden="true" /> Appointment added to your calendar.</div>}
       {showBookingForm && <form className="form-panel booking-form" onSubmit={handleBooking}>
         <h2>Book an appointment</h2>
-        <label>Appointment for<select name="petName" required value={bookingPet} onChange={(event) => setBookingPet(event.target.value)}><option value="" disabled>Select a pet</option>{pets.map((pet) => <option key={pet.name} value={pet.name}>{pet.species === "cat" ? "Cat" : "Dog"} · {pet.name}</option>)}</select></label>
+        <label>Appointment for<select name="petName" required value={bookingPet} onChange={(event) => setBookingPet(event.target.value)}><option value="" disabled>Select a pet</option>{pets.map((pet) => <option key={pet.name} value={pet.name}>{speciesLabels[pet.species] || "Other"} · {pet.name}</option>)}</select></label>
         <label>Reason for visit<select name="reason" defaultValue="Vaccination"><option>Vaccination</option><option>Wellness check</option><option>New concern</option><option>Follow-up</option></select></label>
         <div className="form-grid"><label>Preferred date<input name="date" type="date" required value={selectedDate} onChange={(event) => setSelectedDate(event.target.value)} /></label><label>Preferred time<select name="time" defaultValue="10:30 AM"><option>10:30 AM</option><option>1:00 PM</option><option>3:30 PM</option></select></label></div>
         <label>Clinic<select name="clinic" defaultValue="Happy Pet Clinic"><option>Happy Pet Clinic</option><option>Green Paws Veterinary</option><option>City Animal Hospital</option></select></label>
