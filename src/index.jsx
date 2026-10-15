@@ -127,7 +127,6 @@ const PageHeading = ({ title, subtitle, onBack, action }) => (
       <ArrowLeft aria-hidden="true" />
     </button>
     <div className="page-heading-copy">
-      <span className="page-eyebrow">BAT MAN'S CARE</span>
       <h1>{title}</h1>
       {subtitle && <p>{subtitle}</p>}
     </div>
